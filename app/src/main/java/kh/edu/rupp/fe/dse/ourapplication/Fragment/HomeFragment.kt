@@ -1,5 +1,6 @@
 package kh.edu.rupp.fe.dse.ourapplication.Fragment
 
+import ProductItemBottomSheetFragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,10 @@ class HomeFragment : Fragment() {
 
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater,container,false)
+        binding.viewItems.setOnClickListener {
+            val bottomSheetDialog = ProductItemBottomSheetFragment()
+            bottomSheetDialog.show(parentFragmentManager,null)
+        }
 
 
 
