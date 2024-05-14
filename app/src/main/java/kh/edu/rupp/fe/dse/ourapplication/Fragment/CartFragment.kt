@@ -1,11 +1,13 @@
 package kh.edu.rupp.fe.dse.ourapplication.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import kh.edu.rupp.fe.dse.ourapplication.PayOutActivity
 import kh.edu.rupp.fe.dse.ourapplication.R
 import kh.edu.rupp.fe.dse.ourapplication.adapter.CartAdapter
 import kh.edu.rupp.fe.dse.ourapplication.databinding.FragmentCartBinding
@@ -35,6 +37,11 @@ class CartFragment : Fragment() {
         val adapter = CartAdapter(ArrayList(cartItemName), ArrayList(cartItemPrice), ArrayList(cartImage))
         binding.cardRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.cardRecyclerView.adapter = adapter
+
+        binding.proceedBtn.setOnClickListener{
+            val intent = Intent(requireContext(),PayOutActivity::class.java)
+            startActivity(intent)
+        }
 
         return binding.root
     }
