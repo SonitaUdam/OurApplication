@@ -14,10 +14,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setContentView(R.layout.activity_main)
+
         var NavController=findNavController(R.id.fragmentContainerView)
         var bottomnav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomnav.setupWithNavController(NavController)
+        binding.notificationBtn.setOnClickListener{
+            val bottomSheetDialog = NotificationBottomFragment()
+            bottomSheetDialog.show(supportFragmentManager,"Test")
+        }
 
 
     }
