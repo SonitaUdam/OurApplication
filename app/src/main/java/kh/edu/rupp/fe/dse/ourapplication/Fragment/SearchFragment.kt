@@ -43,7 +43,7 @@ class SearchFragment : Fragment() {
 
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater,container,false)
-        adapter = ProductAdapter(filterItemName,filterItemPrice,filterItemImage)
+        adapter = ProductAdapter(filterItemName,filterItemPrice,filterItemImage,requireContext())
         binding.itemsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.itemsRecyclerview.adapter = adapter
 

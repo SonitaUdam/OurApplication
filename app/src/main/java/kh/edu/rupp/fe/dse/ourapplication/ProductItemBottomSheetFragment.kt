@@ -36,7 +36,7 @@ class ProductItemBottomSheetFragment : BottomSheetDialogFragment() {
             R.drawable.sunglasses,
         )
 
-        val adapter = ProductAdapter(ArrayList(MenuItemName), ArrayList(MenuItemPrice), ArrayList(MenuImage))
+        val adapter = ProductAdapter(ArrayList(MenuItemName), ArrayList(MenuItemPrice), ArrayList(MenuImage),requireContext())
         binding.itemsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.itemsRecyclerview.adapter = adapter
         return binding.root

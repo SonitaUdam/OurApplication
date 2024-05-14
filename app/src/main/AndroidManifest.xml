@@ -13,11 +13,14 @@
         android:theme="@style/Theme.OurApplication"
         tools:targetApi="31">
         <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".PayOutActivity"
             android:exported="false" />
         <activity
             android:name=".ChooseLocationActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".SignInActivity"
             android:exported="false" />
@@ -29,7 +32,7 @@
             android:exported="false" />
         <activity
             android:name=".SplashScreen"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
