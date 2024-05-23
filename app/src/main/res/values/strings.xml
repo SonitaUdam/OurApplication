@@ -3,4 +3,5 @@
     <string name="next">Next</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id"><![CDATA[<resources>\n    <string name=\"OurApplication\">OurApplication</string>\n    <string name=\"default_web_client_id\">YOUR_CLIENT_ID_HERE</string>\n   \n</resources>\n]]></string>
 </resources>
