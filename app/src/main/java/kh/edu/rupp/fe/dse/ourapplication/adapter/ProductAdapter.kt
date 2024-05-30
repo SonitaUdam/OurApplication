@@ -4,9 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View.OnClickListener
-import android.widget.ImageView
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,7 +12,7 @@ import kh.edu.rupp.fe.dse.ourapplication.databinding.ProductItemBinding
 import kh.edu.rupp.fe.dse.ourapplication.model.ProductItem
 
 class ProductAdapter(
-    private val menuItems:List<ProductItem>,
+    private val menuItems: List<ProductItem>,
     private val requiredContext: Context)
     :RecyclerView.Adapter<ProductAdapter.MenuViewHolder>() {
 
