@@ -7,27 +7,27 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="kh.edu.rupp.fe.dse.ourapplication.Fragment.HomeFragment"
+        android:name="kh.edu.rupp.fe.dse.ourapplication.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/cartFragment"
-        android:name="kh.edu.rupp.fe.dse.ourapplication.Fragment.CartFragment"
+        android:name="kh.edu.rupp.fe.dse.ourapplication.fragment.CartFragment"
         android:label="fragment_cart"
         tools:layout="@layout/fragment_cart" />
     <fragment
         android:id="@+id/historyFragment"
-        android:name="kh.edu.rupp.fe.dse.ourapplication.Fragment.HistoryFragment"
+        android:name="kh.edu.rupp.fe.dse.ourapplication.fragment.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="kh.edu.rupp.fe.dse.ourapplication.Fragment.SearchFragment"
+        android:name="kh.edu.rupp.fe.dse.ourapplication.fragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="kh.edu.rupp.fe.dse.ourapplication.Fragment.ProfileFragment"
+        android:name="kh.edu.rupp.fe.dse.ourapplication.fragment.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

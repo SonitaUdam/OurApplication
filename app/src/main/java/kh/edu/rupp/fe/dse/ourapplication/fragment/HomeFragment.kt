@@ -1,5 +1,6 @@
-package kh.edu.rupp.fe.dse.ourapplication.Fragment
+package kh.edu.rupp.fe.dse.ourapplication.fragment
 
+import ProductItemBottomSheetFragment
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

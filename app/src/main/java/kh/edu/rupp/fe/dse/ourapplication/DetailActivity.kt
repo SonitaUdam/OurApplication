@@ -15,33 +15,31 @@ class DetailActivity : AppCompatActivity() {
     private var productName: String? = null
     private var productPrice: String? = null
     private var productDescription: String? = null
-    private var productImageUrl: String? = null
+    private var productImage: String? = null
     private lateinit var auth: FirebaseAuth
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // init firebase auth
-        auth = FirebaseAuth.getInstance()
+        //init firebase auth
+        auth= FirebaseAuth.getInstance()
 
         productName = intent.getStringExtra("MenuItemName")
         productDescription = intent.getStringExtra("MenuItemDescription")
         productPrice = intent.getStringExtra("MenuItemPrice")
-        productImageUrl = intent.getStringExtra("MenuItemImageUrl")
+        productImage = intent.getStringExtra("MenuItemImage")
 
         with(binding){
             detailProductName.text = productName
             detailDescription.text = productDescription
-            Glide.with(this@DetailActivity).load(Uri.parse(productImageUrl)).into(detailProductImage)
+            Glide.with(this@DetailActivity).load(Uri.parse(productImage)).into(detailProductImage)
         }
-
 
         binding.imageButton.setOnClickListener{
             finish()
         }
-        binding.addItemButton.setOnClickListener{
+        binding.addItemButton.setOnClickListener {
             addItemToCart()
         }
 
@@ -50,15 +48,19 @@ class DetailActivity : AppCompatActivity() {
     private fun addItemToCart() {
         val database = FirebaseDatabase.getInstance().reference
         val userId = auth.currentUser?.uid?:""
+        // create a cartItems object
+        val cartItem = CartItems(
+            productName.toString(),
+            productPrice.toString(),
+            productDescription.toString(),
+            productImage.toString(),
+            1)
 
-        // create a cart items object
-        val cartItem = CartItems(productName.toString(), productPrice.toString(), productDescription.toString(), productImageUrl.toString(),1)
-
-        //save data to cart item to firebase
+        // save data to cart items to firebase database
         database.child("user").child(userId).child("CartItems").push().setValue(cartItem).addOnSuccessListener {
-            Toast.makeText(this, "Items Added to cart Successfully 😁", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Items Added to cart Successfully!", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener {
-            Toast.makeText(this, "Items Not Added😒", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Items Not Added!", Toast.LENGTH_SHORT).show()
         }
     }
 }

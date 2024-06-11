@@ -1,7 +1,5 @@
-package kh.edu.rupp.fe.dse.ourapplication.Fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,19 +22,16 @@ class ProductItemBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // inflate the layout for this fragment
-        binding = FragmentProductItemBottomSheetBinding.inflate(inflater, container, false)
-
-        binding.btnback.setOnClickListener {
+        binding = FragmentProductItemBottomSheetBinding.inflate(inflater,container,false)
+        binding.btnback.setOnClickListener{
             dismiss()
         }
         retrieveMenuItems()
-
         return binding.root
     }
 
@@ -45,30 +40,28 @@ class ProductItemBottomSheetFragment : BottomSheetDialogFragment() {
         val productRef: DatabaseReference = database.reference.child("menu")
         productItems = mutableListOf()
 
-        productRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        productRef.addListenerForSingleValueEvent(object :ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (productSnapshot in snapshot.children) {
+                //loop for through each food item
+                for (productSnapshot in snapshot.children){
                     val productItem = productSnapshot.getValue(ProductItem::class.java)
-                    productItem?.let { productItems.add(it) }
+                    productItem?.let{ productItems.add(it)}
                 }
+                // once data receive, set to adapter
                 setAdapter()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d("DatabaseError", "Error: ${error.message}")
+
             }
         })
     }
-
     private fun setAdapter() {
-        if (productItems.isNotEmpty()) {
-            val adapter = ProductAdapter(productItems, requireContext())
-            binding.itemsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-            binding.itemsRecyclerview.adapter = adapter
-        }
+        val adapter = ProductAdapter(productItems,requireContext())
+        binding.itemsRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+        binding.itemsRecyclerview.adapter = adapter
     }
-
     companion object {
-        // Optional: Add any static methods or constants here
+
     }
 }

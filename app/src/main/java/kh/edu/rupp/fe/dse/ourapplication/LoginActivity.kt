@@ -2,23 +2,20 @@ package kh.edu.rupp.fe.dse.ourapplication
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.database
-import com.google.firebase.firestore.FirebaseFirestore
 import kh.edu.rupp.fe.dse.ourapplication.databinding.ActivityLoginBinding
 import kh.edu.rupp.fe.dse.ourapplication.model.UserModel
 
@@ -40,29 +37,29 @@ class LoginActivity : AppCompatActivity() {
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+
         // initialization of firebase auth
-        auth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
         // initialization of firebase database
-        database = Firebase.database.reference
-        // initialization of google
+        database = FirebaseDatabase.getInstance().reference
+        // google sign in
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
 
         // login with email and password
-        binding.loginButton.setOnClickListener{
-
+        binding.loginButton.setOnClickListener {
             // get data from text field
             email = binding.emailAddress.text.toString().trim()
             password = binding.password.text.toString().trim()
 
-            if(email.isBlank()||password.isBlank()){
-                Toast.makeText(this, "Please enter all the details!", Toast.LENGTH_SHORT).show()
-            }else{
-                createUser()
-                Toast.makeText(this, "Login Successfully!", Toast.LENGTH_SHORT).show()
+            if (email.isBlank() || password.isBlank()) {
+                Toast.makeText(this, "Please fill all the details!", Toast.LENGTH_SHORT).show()
+            } else {
+                signInUser(email, password)
             }
         }
-        binding.donthavebtn.setOnClickListener{
-            val intent = Intent(this,SignInActivity::class.java)
+
+        binding.donthavebtn.setOnClickListener {
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
 
@@ -73,73 +70,77 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        result ->
-    if (result.resultCode == Activity.RESULT_OK){
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        if (task.isSuccessful){
-            val account: GoogleSignInAccount? = task.result
-            val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-            auth.signInWithCredential(credential).addOnCompleteListener {task ->
-                if (task.isSuccessful){
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                }else{
-                    Toast.makeText(this, "Sign In Failed!", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }else{
-        Toast.makeText(this, "Sign In Failed!",Toast.LENGTH_SHORT).show()
-    }
-
-    }
-
-    private fun createUser() {
+    private fun signInUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful){
+            if (task.isSuccessful) {
                 val user = auth.currentUser
+                Toast.makeText(this, "Login Successfully!", Toast.LENGTH_SHORT).show()
                 updateUi(user)
-            }else{
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{ task ->
-                    if (task.isSuccessful){
-                        saveUserdata()
-                        val user = auth.currentUser
-                        updateUi(user)
-                    } else{
-                        Toast.makeText(this, "Sign In Failed!", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            } else {
+                createUser(email, password)
             }
         }
     }
 
-    private fun saveUserdata() {
-        // get data from text field
-        email = binding.emailAddress.text.toString().trim()
-        password = binding.password.text.toString().trim()
-
-        val user = UserModel(userName, email, password)
-        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-        // save data into database
-        database.child("user").child(userId).setValue(user)
-
-
+    private fun createUser(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = auth.currentUser
+                Toast.makeText(this, "Create User & Login Successfully!", Toast.LENGTH_SHORT).show()
+                saveUserData(userName, email)
+                updateUi(user)
+            } else {
+                Toast.makeText(this, "Authentication Failed!", Toast.LENGTH_SHORT).show()
+                Log.d("Account", "createUserAccount: Authentication Failed", task.exception)
+            }
+        }
     }
 
+    private fun saveUserData(userName: String?, email: String) {
+        val user = UserModel(userName, email, password)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            database.child("user").child(it).setValue(user)
+        }
+    }
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account: GoogleSignInAccount? = task.getResult(Exception::class.java)
+                    if (account != null) {
+                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                        auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
+                            if (authTask.isSuccessful) {
+                                Toast.makeText(this, "Sign-In Successfully!", Toast.LENGTH_SHORT).show()
+                                updateUi(authTask.result?.user)
+                            } else {
+                                Toast.makeText(this, "Google Sign-in Failed!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Google Sign-in Failed!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    // check if user already logged in
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-        if (currentUser!= null){
-            val intent = Intent(this,MainActivity::class.java)
+        if (currentUser != null) {
+            updateUi(currentUser)
+        }
+    }
+
+    private fun updateUi(user: FirebaseUser?) {
+        user?.let {
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
-    }
-    private fun updateUi(user: FirebaseUser?) {
-        val intent = Intent(this,MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }
